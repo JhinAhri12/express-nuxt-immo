@@ -3,7 +3,7 @@ const express = require('express');
 
 const app = express();
 const mongoose = require('mongoose')
-const house = require('./models/house');
+const House = require('./models/house');
 
 mongoose.connect('mongodb+srv://'+process.env.USERNAME+':'+ process.env.PASSWORD +'@cluster0.cdhwbn1.mongodb.net/test',
   { useNewUrlParser: true,
@@ -20,7 +20,7 @@ app.use((req, res, next) => {
     next();
   });
 
-app.get('/api/stuff', (req, res, next) => {
+app.get('/house/create', (req, res, next) => {
     const stuff = [
       {
         _id: '1',
@@ -42,12 +42,18 @@ app.get('/api/stuff', (req, res, next) => {
     res.status(200).json(stuff);
   });
 
+  app.use('/house/index', (req, res, next) => {
+    House.find()
+      .then(houses => res.status(200).json(houses))
+      .catch(error => res.status(400).json({ error }));
+  });
+ 
   app.post('/house/create', (req, res, next) => {
     delete req.body._id;
     const house = new House({
       ...req.body
     });
-    thing.save()
+    house.save()
       .then(() => res.status(201).json({ message: 'Bien enregistré !'}))
       .catch(error => res.status(400).json({ error }));
   });
