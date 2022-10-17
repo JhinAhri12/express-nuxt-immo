@@ -1,6 +1,17 @@
+require('dotenv').config()
 const express = require('express');
 
 const app = express();
+const mongoose = require('mongoose')
+const house = require('./models/house');
+
+mongoose.connect('mongodb+srv://'+process.env.USERNAME+':'+ process.env.PASSWORD +'@cluster0.cdhwbn1.mongodb.net/test',
+  { useNewUrlParser: true,
+    useUnifiedTopology: true })
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
+
+app.use(express.json());
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -9,7 +20,7 @@ app.use((req, res, next) => {
     next();
   });
 
-app.use('/api/stuff', (req, res, next) => {
+app.get('/api/stuff', (req, res, next) => {
     const stuff = [
       {
         _id: '1',
@@ -29,6 +40,16 @@ app.use('/api/stuff', (req, res, next) => {
       },
     ];
     res.status(200).json(stuff);
+  });
+
+  app.post('/house/create', (req, res, next) => {
+    delete req.body._id;
+    const house = new House({
+      ...req.body
+    });
+    thing.save()
+      .then(() => res.status(201).json({ message: 'Bien enregistré !'}))
+      .catch(error => res.status(400).json({ error }));
   });
 
 module.exports = app;
