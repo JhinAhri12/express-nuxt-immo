@@ -42,13 +42,15 @@ app.get('/house/create', (req, res, next) => {
     res.status(200).json(stuff);
   });
 
+  // index
   app.use('/house/index', (req, res, next) => {
     House.find()
       .then(houses => res.status(200).json(houses))
       .catch(error => res.status(400).json({ error }));
   });
  
-  app.post('/house/create', (req, res, next) => {
+  // create
+  app.post('/house/houseform', (req, res, next) => {
     delete req.body._id;
     const house = new House({
       ...req.body
@@ -58,4 +60,23 @@ app.get('/house/create', (req, res, next) => {
       .catch(error => res.status(400).json({ error }));
   });
 
+  // house/id
+  app.get('/house/:id', (req, res, next) => {
+    House.findOne({ _id: req.params.id })
+      .then(house => res.status(200).json(house))
+      .catch(error => res.status(404).json({ error }));
+  });
+
+  // update house
+  app.put('/house/:id', (req, res, next) => {
+    House.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
+      .then(() => res.status(200).json({ message: 'Maison modifié !'}))
+      .catch(error => res.status(400).json({ error }));
+  });
+
+  app.delete('/house/:id', (req, res, next) => {
+    House.deleteOne({ _id: req.params.id })
+      .then(() => res.status(200).json({ message: 'Maison supprimé !'}))
+      .catch(error => res.status(400).json({ error }));
+  });
 module.exports = app;

@@ -2,13 +2,15 @@
     <div>
         <div>
             <h2>{{house.title}}</h2>
-            <nuxt-link class="btn btn-switch-wine" :to="'/house/' + house._id">Voir les détails</nuxt-link>
+
+            <p>{{house.price}}</p>
+            <p>{{house.img}}</p>
         </div>
     </div>
 </template>
 <script>
 export default {
-    name: 'HouseCard',
+    name: 'HouseDetails',
     props: {
         house: Object
       }
